@@ -11,13 +11,30 @@ document.addEventListener("DOMContentLoaded", () => {
     // Track whose turn it is: true for X, false for O
     let xTurn = true;
 
+    // Helper function to check for a winner
+    function checkWinner() {
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]            // Diagonals
+        ];
+
+        for (const combination of winningCombinations) {
+            const [a, b, c] = combination;
+            if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                return gameState[a]; // Returns "X" or "O"
+            }
+        }
+        return null;
+    }
+
     squares.forEach((square, index) => {
         // Apply the base square class when the page loads
         square.classList.add("square");
 
         // Add mouseenter event listener for hover effect
         square.addEventListener("mouseenter", () => {
-            if (gameState[index] === "") {
+            if (gameState[index] === "" && !checkWinner()) {
                 square.classList.add("hover");
                 if (!xTurn) {
                     square.classList.add("O");
@@ -37,25 +54,37 @@ document.addEventListener("DOMContentLoaded", () => {
         square.addEventListener("click", () => {
             console.log(`Square ${index} clicked!`);
 
-            // Check if the square is already filled to prevent overwriting
-            if (gameState[index] === "") {
+            // Check if the square is empty and there is no winner yet
+            if (gameState[index] === "" && !checkWinner()) {
                 const currentPlayer = xTurn ? "X" : "O";
                 
+                // Clean up hover classes before setting the permanent player class
+                square.classList.remove("hover", "O");
+
                 // Display the X or O inside the square
                 square.textContent = currentPlayer;
                 
-                // Add the "X" or "O" class for stylesheet color styling
+                // Add the "X" or "O" class for stylesheet color styling[cite: 1]
                 square.classList.add(currentPlayer);
                 
                 // Update the game state array
                 gameState[index] = currentPlayer;
                 
-                // Switch turns for the next click
-                xTurn = !xTurn;
+                // Check if the current move resulted in a win
+                const winner = checkWinner();
+                if (winner) {
+                    const statusDiv = document.getElementById("status");
+                    statusDiv.textContent = `Congratulations! ${winner} is the Winner!`;
+                    statusDiv.classList.add("you-won");
+                    console.log(`Winner declared: ${winner}`);
+                } else {
+                    // Switch turns for the next click
+                    xTurn = !xTurn;
+                }
 
                 console.log("Current game state:", gameState);
             } else {
-                console.log("Square is already taken!");
+                console.log("Square is already taken or game is over!");
             }
         });
     });
