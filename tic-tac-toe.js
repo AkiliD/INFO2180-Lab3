@@ -42,6 +42,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
+        // Select the New Game button
+    const newGameButton = document.querySelector(".btn");
+
+    // Add click event listener to reset the game
+    newGameButton.addEventListener("click", () => {
+        // 1. Reset the game state array
+        gameState = Array(9).fill("");
+
+        // 2. Reset turn back to X
+        xTurn = true;
+
+        // 3. Clear each square on the board
+        squares.forEach(square => {
+            square.textContent = "";
+            square.classList.remove("X", "O", "hover");
+        });
+
+        // 4. Reset the status message and remove the win class
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = "Move your mouse over a square and click to play an X or an O.";
+        statusDiv.classList.remove("you-won");
+
+        console.log("Game has been reset!");
+    });
+
         // Add mouseleave event listener to remove hover effect
         square.addEventListener("mouseleave", () => {
             square.classList.remove("hover");
