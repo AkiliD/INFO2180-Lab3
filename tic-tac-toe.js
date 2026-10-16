@@ -15,6 +15,24 @@ document.addEventListener("DOMContentLoaded", () => {
         // Apply the base square class when the page loads
         square.classList.add("square");
 
+        // Add mouseenter event listener for hover effect
+        square.addEventListener("mouseenter", () => {
+            if (gameState[index] === "") {
+                square.classList.add("hover");
+                if (!xTurn) {
+                    square.classList.add("O");
+                }
+            }
+        });
+
+        // Add mouseleave event listener to remove hover effect
+        square.addEventListener("mouseleave", () => {
+            square.classList.remove("hover");
+            if (gameState[index] === "") {
+                square.classList.remove("O");
+            }
+        });
+
         // Add click event listener to each square
         square.addEventListener("click", () => {
             console.log(`Square ${index} clicked!`);
